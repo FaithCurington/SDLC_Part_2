@@ -1,0 +1,2 @@
+# SDLC_Part_2
+Library Management System that allows users to add new customer profiles, delete customer profiles by ID number, and display a list of all current customers. Once a new customer profile is created, they are assigned a randomly generated 7-digit ID number. Customer profiles include the following information: first and last names, home address, email address (this information is optional), unique 7-digit ID number, and the customer's overdue book fees.
