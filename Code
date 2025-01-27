@@ -1,0 +1,271 @@
+/**
+ * Faith Curington
+ * CEN 3024 - Software Development 1
+ * January 26, 2025
+ * Main.java
+ * This class handles the management of customer profiles within the LMS, including the ability to add, remove,
+ * and display a list of all customer profiles. It interacts with the user through a command-line interface
+ * and displays a main menu to manage customer information.
+ */
+
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Random;
+import java.util.Scanner;
+
+public class Main {
+    private List<Customer> customers; // List to store all customer profiles within the LMS
+    private Scanner scanner; // Scanner object to manage user input
+
+    /**
+     * Main constructor
+     * Initializes the customer list and scanner object for user input.
+     *
+     * Arguments: none
+     * Return value: none
+     */
+    public Main() {
+        customers = new ArrayList<>(); // Initialize the list of customers
+        scanner = new Scanner(System.in); // Initialize the scanner for input
+    }
+
+    /**
+     * addCustomer method
+     * Asks the user to input information for a new customer, then creates a new Customer object
+     * and adds it to the list of all customers within the LMS.
+     *
+     * Arguments: none
+     * Return value: none
+     */
+    public void addCustomer() {
+        System.out.print("Please Enter Customer's First Name: ");
+        String firstName = scanner.nextLine();
+        System.out.print("Please Enter Customer's Last Name: ");
+        String lastName = scanner.nextLine();
+        System.out.print("Please Enter Customer's Address: ");
+        String address = scanner.nextLine();
+        System.out.print("Please Enter Customer's Email Address or leave field blank: ");
+        String email = scanner.nextLine();
+
+        // Create a new customer and add it to the list
+        Customer newCustomer = new Customer(firstName, lastName, address, email);
+        customers.add(newCustomer);
+        System.out.println("New Customer ID: " + newCustomer.getCustomerId()); // Display the new customer ID
+
+        // Display all current customers
+        System.out.println("\nCurrent List of All Customers:");
+        for (Customer customer : customers) {
+            System.out.println(customer); // Uses the toString method from the Customer class
+        }
+    }
+
+
+    /**
+     * removeCustomer method
+     * Asks the user to enter a customer's unique, 7-digit ID number, searches for the customer within the list,
+     * and removes the customer if the ID number is found.
+     *
+     * Arguments: none
+     * Return value: none
+     */
+    public void removeCustomer() {
+        System.out.print("Please Enter the Customer ID to Remove: ");
+        String id = scanner.nextLine();
+
+        Customer customerToRemove = null;
+        for (Customer customer : customers) {
+            if (customer.getCustomerId().equals(id)) {
+                customerToRemove = customer;
+                break;
+            }
+        }
+
+        // Remove the customer if found, or notify if not found
+        if (customerToRemove != null) {
+            customers.remove(customerToRemove);
+            System.out.println("Customer Profile with ID: " + id + " has been Removed.");
+        } else {
+            System.out.println("Customer ID was not found.");
+        }
+        // Display all current customers
+        System.out.println("\nCurrent List of All Customers:");
+        for (Customer customer : customers) {
+            System.out.println(customer); // Uses the toString method from the Customer class
+        }
+    }
+
+
+    /**
+     * listCustomers method
+     * Displays the list of all customers within the LMS.
+     * If there are no customers, it notifies the user that the list is empty.
+     *
+     * Arguments: none
+     * Return value: none
+     */
+    public void listCustomers() {
+        if (customers.isEmpty()) {
+            System.out.println("There are currently No Customer Profiles.");
+        } else {
+            System.out.println("\nCurrent Customer Profiles:");
+            for (Customer customer : customers) {
+                System.out.println(customer);
+            }
+        }
+    }
+
+    /**
+     * showMenu method
+     * Displays the main menu and manages user input.
+     * It allows the user to create, remove, or display a list of all customer profiles, as well as exit the main menu.
+     *
+     * Arguments: none
+     * Return value: none
+     */
+    public void showMenu() {
+        while (true) {
+
+            System.out.println("\nMain Menu");
+            System.out.println("1. Create a New Customer Profile");
+            System.out.println("2. Delete an Existing Customer Profile");
+            System.out.println("3. Display a List of All Current Customer Profiles");
+            System.out.println("4. Exit to Main Menu");
+            System.out.print("Please Select an option: ");
+
+            int choice = Integer.parseInt(scanner.nextLine());
+
+            switch (choice) {
+                case 1:
+                    addCustomer();
+                    break;
+                case 2:
+                    removeCustomer();
+                    break;
+                case 3:
+                    listCustomers();
+                    break;
+                case 4:
+                    System.out.println("Exiting the Main Menu.");
+                    return;
+                default:
+                    System.out.println("Invalid Selection. Please choose another option.");
+            }
+        }
+    }
+
+    /**
+     * main method
+     * Creates an instance of the Main and displays the main menu to the user.
+     * The main method serves as the entry point for executing the program.
+     *
+     * Arguments: none
+     * Return value: none
+     */
+    public static void main(String[] args) {
+        Main cms = new Main(); // Create the CMS instance
+        cms.showMenu(); // Display the menu
+    }
+
+    /**
+     * Faith Curington
+     * CEN 3024 - Software Development 1
+     * January 26, 2025
+     * Customer.java
+     * This class represents a customer profile. It stores customer information such as the ID number, first name, last name, home address,
+     * email address (email is optional), and any overdue fees. It also provides methods to retrieve the customer's information and a method
+     * to generate a unique, 7-digit customer ID number.
+     */
+    class Customer {
+        private String customerId;
+        private String firstName;
+        private String lastName;
+        private String address;
+        private String email;
+        private double overdueFine;
+
+        /**
+         * Customer constructor
+         * This constructor initializes the customer object with the specified first name, last name, home address, and email address.
+         * The unique customer ID is generated automatically.
+         * Multiple constructors with the same name, but different parameters, have been created to cause constructor overloading.
+         *
+         * Arguments:
+         *      - String firstName: the first name of the customer
+         *      - String lastName: the last name of the customer
+         *      - String address: the address of the customer
+         *      - String email: the email address of the customer
+         * Return value: none
+         */
+        public Customer(String firstName, String lastName, String address, String email) {
+            this.customerId = generateUniqueId();
+            this.firstName = firstName;
+            this.lastName = lastName;
+            this.address = address;
+            this.email = ""; // Default email is empty
+            this.overdueFine = overdueFine;
+        }
+
+        /**
+         * Customer constructor with overdue fine
+         * This initializes the customer object with the specified first name, last name, home address, email address,
+         * and overdue fine.
+         * Multiple constructors with the same name, but different parameters, have been created to cause constructor overloading.
+         *
+         * Arguments:
+         *      - String firstName: the first name of the customer
+         *      - String lastName: the last name of the customer
+         *      - String address: the address of the customer
+         *      - String email: the email address of the customer
+         *      - double overdueFine: the overdue fine of the customer
+         * Return value: none
+         */
+        public Customer(String firstName, String lastName, String address, String email, double overdueFine) {
+            this.customerId = generateUniqueId();
+            this.firstName = firstName;
+            this.lastName = lastName;
+            this.address = address;
+            this.email = email;
+            this.overdueFine = overdueFine;
+        }
+
+        /**
+         * generateUniqueId method
+         * Generates a unique, 7-digit ID number for each customer using a random number.
+         *
+         * Arguments: none
+         * Return value:
+         *      - String: a unique 7-digit customer ID
+         */
+        private String generateUniqueId() {
+            Random rand = new Random();
+            return String.format("%07d", rand.nextInt(10000000)); // Ensure the ID is 7 digits long
+        }
+
+        /**
+         * getCustomerId method
+         * Retrieves the unique, 7-digit customer ID number.
+         *
+         * Arguments: none
+         * Return value:
+         *      - String: the customer ID
+         */
+        public String getCustomerId() {
+            return customerId;
+        }
+
+        /**
+         * toString method
+         * Returns a string of the customer profile.
+         * The returned string includes the customer's ID, first name, last name, home address,
+         * email address (if available), and overdue fine.
+         *
+         * Arguments: none
+         * Return value:
+         *      - String: a string representation of the customer profile
+         */
+        @Override
+        public String toString() {
+            return customerId + "-" + firstName + "-" + lastName + "-" + address + "-" + (email.isEmpty() ? "N/A-" : email) + overdueFine;
+        }
+    }
+}
